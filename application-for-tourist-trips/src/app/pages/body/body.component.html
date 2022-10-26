@@ -1,0 +1,39 @@
+<div class="main-container">
+    <div class="side-menu">
+        <button type="button" class="btn side-menu-btn" [ngClass]="{'active-side-menu-btn': AboutUsCheck}"
+            (click)="sideMenuChange();AboutUsCheck = true">Про нас</button>
+        <button type="button" class="btn side-menu-btn" [ngClass]="{'active-side-menu-btn': countryCheck}"
+            (click)="sideMenuChange();countryCheck = true">Обрати країну</button>
+        <button type="button" class="btn side-menu-btn" [ngClass]="{'active-side-menu-btn': buyTicketCheck}"
+            (click)="sideMenuChange();buyTicketCheck = true">Придбати авіа квиток</button>
+        <button type="button" class="btn side-menu-btn" [ngClass]="{'active-side-menu-btn': bookHotelCheck}"
+            (click)="sideMenuChange();bookHotelCheck = true">Забронювати готель</button>
+    </div>
+    <div class="content">
+        <div class="p-4 container-fluid">
+            <ng-container *ngIf="AboutUsCheck">
+                <h2>Про нас.</h2>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius, dolorum. Impedit nihil, laborum modi
+                    eveniet
+                    qui
+                    optio facilis eius explicabo, pariatur distinctio labore voluptas ipsam corporis debitis voluptates
+                    saepe
+                    voluptate nesciunt aperiam alias beatae. Officia, minima natus vel aperiam voluptas doloribus porro.
+                    Nam
+                    praesentium natus cum placeat laboriosam nisi quae velit inventore excepturi error? Cumque quibusdam
+                    voluptatibus possimus vero sit unde iure sed, eveniet impedit? Corrupti ipsum nobis commodi repellat
+                    quisquam
+                    aspernatur fuga incidunt fugit! Dolorum soluta sequi voluptas consequatur iusto illum, fugiat nihil
+                    architecto
+                    ipsa tempore totam laudantium inventore, placeat facilis quo! Natus pariatur tempora perspiciatis
+                    numquam
+                    nihil
+                    dolor, sequi maxime reiciendis id tempore, quidem quis officia a earum sapiente odio debitis
+                    voluptatem
+                    nemo
+                    est
+                    ratione. </p>
+            </ng-container>
+        </div>
+    </div>
+</div>

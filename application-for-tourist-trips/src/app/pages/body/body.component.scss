@@ -1,0 +1,58 @@
+@import "../../shared/styles/variable";
+
+.main-container {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: left;
+  align-items: flex-start;
+  width: 100vw;
+  max-width: 2420px;
+  min-height: calc(100vh - 190px);
+  margin: 70px auto;
+}
+.side-menu {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: start;
+  align-items: center;
+  min-width: 210px;
+  width: fit-content;
+  border-radius: 0 15px 15px 0;
+  height: 100%;
+  background-color: $mainColor;
+  padding: 10px 0 10px 10px;
+}
+.content {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: start;
+  align-items: flex-start;
+  width: 80%;
+  height: 100%;
+}
+.side-menu-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 70px;
+  height: auto;
+  padding: 5px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 25px 0 0 25px;
+  color: white;
+  transition: all 0.35s;
+  &:hover {
+    color: black;
+  }
+  &:active {
+    background-color: white;
+  }
+}
+
+.active-side-menu-btn {
+  background-color: white;
+  color: black;
+  box-shadow: 10px 0px 20px 0px white;
+}

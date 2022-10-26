@@ -1,0 +1,57 @@
+@import "../../shared/styles/variable";
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  width: 100vw;
+  height: 65px;
+  background-color: $mainColor;
+  box-shadow: 1px 0 2px 2px $lightgray;
+  position: fixed;
+  top: 0;
+  left: 0;
+  margin: 0 auto;
+  border-radius: 0 0 10px 10px;
+}
+.calendar {
+  width: 60px;
+  background-image: url(../../../assets/icons/calendar-alt-black.svg);
+  background-repeat: no-repeat;
+  background-size: 45%;
+  background-position: center;
+  border: 1px solid transparent;
+
+  &:hover {
+    animation-name: border-run;
+    animation-duration: 1.5s;
+    background-color: transparent;
+    background-size: 46%;
+  }
+  &:active {
+    border: 1px solid transparent;
+    background-size: 41%;
+  }
+}
+
+@keyframes border-run {
+  0% {
+    border-right: 1px solid white;
+  }
+  20% {
+    border-bottom: 1px solid white;
+  }
+  40% {
+    border-left: 1px solid white;
+  }
+  60% {
+    border-top: 1px solid white;
+  }
+  80% {
+    border-right: 1px solid white;
+  }
+  100% {
+    border: 1px solid transparent;
+  }
+}
