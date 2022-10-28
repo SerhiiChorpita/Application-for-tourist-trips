@@ -10,24 +10,32 @@
   min-height: calc(100vh - 190px);
   margin: 70px auto;
 }
+.side-menu-block {
+  display: block;
+  width: 210px;
+  height: 100vh;
+}
 .side-menu {
   display: flex;
   flex-flow: column nowrap;
   justify-content: start;
   align-items: center;
-  min-width: 210px;
+  min-width: 100%;
   width: fit-content;
   border-radius: 0 15px 15px 0;
-  height: 100%;
-  background-color: $mainColor;
+  height: 335px;
+  background-color: rgb(162, 219, 238);
   padding: 10px 0 10px 10px;
+  position: sticky;
+  top: 70px;
+  left: 0;
 }
 .content {
   display: flex;
   flex-flow: column nowrap;
   justify-content: start;
   align-items: flex-start;
-  width: 80%;
+  width: 78%;
   height: 100%;
 }
 .side-menu-btn {
@@ -55,4 +63,11 @@
   background-color: white;
   color: black;
   box-shadow: 10px 0px 20px 0px white;
+}
+
+.bg-yellow {
+  background-color: rgba(255, 255, 0, 0.185);
+}
+.img-city {
+  background: url();
 }

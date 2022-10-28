@@ -1,13 +1,15 @@
 <div class="main-container">
-    <div class="side-menu">
-        <button type="button" class="btn side-menu-btn" [ngClass]="{'active-side-menu-btn': AboutUsCheck}"
-            (click)="sideMenuChange();AboutUsCheck = true">Про нас</button>
-        <button type="button" class="btn side-menu-btn" [ngClass]="{'active-side-menu-btn': countryCheck}"
-            (click)="sideMenuChange();countryCheck = true">Обрати країну</button>
-        <button type="button" class="btn side-menu-btn" [ngClass]="{'active-side-menu-btn': buyTicketCheck}"
-            (click)="sideMenuChange();buyTicketCheck = true">Придбати авіа квиток</button>
-        <button type="button" class="btn side-menu-btn" [ngClass]="{'active-side-menu-btn': bookHotelCheck}"
-            (click)="sideMenuChange();bookHotelCheck = true">Забронювати готель</button>
+    <div class="side-menu-block">
+        <div class="side-menu">
+            <button type="button" class="btn side-menu-btn" [ngClass]="{'active-side-menu-btn': AboutUsCheck}"
+                (click)="sideMenuChange();AboutUsCheck = true">Про нас</button>
+            <button type="button" class="btn side-menu-btn" [ngClass]="{'active-side-menu-btn': countryCheck}"
+                (click)="sideMenuChange();countryCheck = true; getCountries()">Обрати країну</button>
+            <button type="button" class="btn side-menu-btn" [ngClass]="{'active-side-menu-btn': bookHotelCheck}"
+                (click)="sideMenuChange();bookHotelCheck = true; checkSelectedHotel()">Забронювати готель</button>
+            <button type="button" class="btn side-menu-btn" [ngClass]="{'active-side-menu-btn': buyTicketCheck}"
+                (click)="sideMenuChange();buyTicketCheck = true">Придбати авіа квиток</button>
+        </div>
     </div>
     <div class="content">
         <div class="p-4 container-fluid">
@@ -34,6 +36,36 @@
                     est
                     ratione. </p>
             </ng-container>
+
+            <ng-container *ngIf="countryCheck">
+                <form #countriesCheck="ngForm">
+                    <ng-container *ngFor="let item of countries">
+                        <div class="container">
+                            <label>
+                                <input type="checkbox" [name]="item.name" ngModel>
+                                <span>{{item.name}}</span></label>
+                        </div>
+                        <hr>
+                    </ng-container>
+                    <button class="btn btn-warning" (click)="selectedCountriesCheck(countriesCheck)">Обрати</button>
+                </form>
+            </ng-container>
+
+
+            <ng-container *ngIf="bookHotelCheck">
+                <form #hotelCheck="ngForm">
+                    <ng-container *ngFor="let item of selectedHotels">
+                        <label>
+                            <input type="checkbox" [name]="item.name" ngModel>
+                            <span>{{item.name}}</span><span class="bg-yellow">- {{item.city}} -
+                                {{item.country}}</span></label>
+                        <div class="img-city"></div>
+                        <hr>
+                    </ng-container>
+                    <button class="btn btn-warning" (click)="selectedHotelCheck(hotelCheck)">Обрати</button>
+                </form>
+            </ng-container>
+
         </div>
     </div>
 </div>
