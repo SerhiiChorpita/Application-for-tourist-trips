@@ -7,8 +7,14 @@
                 (click)="sideMenuChange();countryCheck = true; getCountries()">Обрати країну</button>
             <button type="button" class="btn side-menu-btn" [ngClass]="{'active-side-menu-btn': bookHotelCheck}"
                 (click)="sideMenuChange();bookHotelCheck = true; checkSelectedHotel()">Забронювати готель</button>
-            <button type="button" class="btn side-menu-btn" [ngClass]="{'active-side-menu-btn': buyTicketCheck}"
-                (click)="sideMenuChange();buyTicketCheck = true">Придбати авіа квиток</button>
+            <ng-container *ngIf="selectedTickets.length > 0">
+                <button type="button" class="btn side-menu-btn" [ngClass]="{'active-side-menu-btn': buyTicketCheck}"
+                    (click)="sideMenuChange();buyTicketCheck = true">Придбати авіа квиток</button>
+            </ng-container>
+            <ng-container *ngIf="selectedTickets.length === 0">
+                <button type="button" class="btn side-menu-btn" data-bs-toggle="modal"
+                    data-bs-target="#exampleModal">Придбати авіа квиток</button>
+            </ng-container>
         </div>
     </div>
     <div class="content">
@@ -16,8 +22,7 @@
             <ng-container *ngIf="AboutUsCheck">
                 <h2>Про нас.</h2>
                 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius, dolorum. Impedit nihil, laborum modi
-                    eveniet
-                    qui
+                    eveniet qui
                     optio facilis eius explicabo, pariatur distinctio labore voluptas ipsam corporis debitis voluptates
                     saepe
                     voluptate nesciunt aperiam alias beatae. Officia, minima natus vel aperiam voluptas doloribus porro.
@@ -39,27 +44,48 @@
 
             <ng-container *ngIf="countryCheck">
                 <form #countriesCheck="ngForm">
-                    <ng-container *ngFor="let item of countries">
-                        <div class="container">
-                            <label>
-                                <input type="checkbox" [name]="item.name" ngModel>
-                                <span>{{item.name}}</span></label>
+                    <ng-container *ngFor="let item of countries; index as i">
+                        <div class="d-flex justify-content-between align-items-center p-2"
+                            [ngClass]="{'bg-lightgrey':item.travelStatus === 'Недоступний'}" [id]="'itemC'+i">
+                            <label class="d-flex justify-content-center align-items-center">
+                                <input type="checkbox" [name]="item.name" ngModel
+                                    [disabled]="item.travelStatus === 'Недоступний'"
+                                    (click)="changeColor('itemC'+i, countriesCheck, item.name)">
+                                <div class="container">
+                                    <h2><strong> {{item.name}}</strong></h2>
+                                    <span class="border-box">Тревел
+                                        статус: <span
+                                            [ngClass]="{'bg-green':item.travelStatus === 'Доступний','bg-red':item.travelStatus === 'Недоступний'}">{{item.travelStatus}}</span></span>
+                                    <span class="border-box">Кількість готелів: {{item.availableHotels}}</span>
+                                    <span class="border-box">Кількість турів: {{item.toursCount}}</span>
+                                </div>
+                            </label>
+                            <div class="img-world"></div>
                         </div>
                         <hr>
                     </ng-container>
-                    <button class="btn btn-warning" (click)="selectedCountriesCheck(countriesCheck)">Обрати</button>
+                    <button class="btn btn-warning"
+                        (click)="selectedCountriesCheck(countriesCheck);sideMenuChange();bookHotelCheck = true; checkSelectedHotel()">Обрати</button>
                 </form>
             </ng-container>
 
 
             <ng-container *ngIf="bookHotelCheck">
                 <form #hotelCheck="ngForm">
-                    <ng-container *ngFor="let item of selectedHotels">
-                        <label>
-                            <input type="checkbox" [name]="item.name" ngModel>
-                            <span>{{item.name}}</span><span class="bg-yellow">- {{item.city}} -
-                                {{item.country}}</span></label>
-                        <div class="img-city"></div>
+                    <ng-container *ngFor="let item of selectedHotels; index as i">
+                        <div class="d-flex justify-content-between align-items-center  p-2" [id]="'itemH'+i">
+                            <label class="d-flex justify-content-center align-items-center">
+                                <input type="checkbox" [name]="item.name" ngModel
+                                    (click)="changeColor('itemH'+i, hotelCheck, item.name)">
+                                <div class="container">
+                                    <h2><strong> {{item.name}}</strong></h2>
+                                    <span class="border-box">Вільних номерів:{{item.availableRooms}}</span>
+                                    <span class="border-box">Місто:{{item.city}}</span>
+                                    <span class="border-box">Країна:{{item.country}}</span>
+                                </div>
+                            </label>
+                            <div class="img-hotel"></div>
+                        </div>
                         <hr>
                     </ng-container>
                     <button class="btn btn-warning" (click)="selectedHotelCheck(hotelCheck)">Обрати</button>
@@ -68,4 +94,25 @@
 
         </div>
     </div>
+
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Придбати авіа квиток</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Будь ласка, спочатку оберіть країну та готель
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Зрозуміло</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>

@@ -1,27 +1,27 @@
 -- -- CREATE DATABASE api;
 -- -- use api;
 
--- --  CREATE TABLE `countries` (
--- --   `id`       int(10)     unsigned NOT NULL AUTO_INCREMENT,
--- --   `name`     varchar(30) DEFAULT '',
--- --   `trevelStatus`    boolean DEFAULT true,
--- --   `availableHotels`    int(10) DEFAULT '0',
--- --   `toursCount`    int(10) DEFAULT '5',
--- --  
--- --   PRIMARY KEY (`id`)
--- -- ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+--   CREATE TABLE `countries` (
+--    `id`       int(10)     unsigned NOT NULL AUTO_INCREMENT,
+--    `name`     varchar(30) DEFAULT '',
+--    `travelStatus`    boolean DEFAULT true,
+--    `availableHotels`    int(10) DEFAULT '0',
+--    `toursCount`    int(10) DEFAULT '5',
+  
+--    PRIMARY KEY (`id`)
+--  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- -- INSERT INTO countries (name, trevelStatus,availableHotels,toursCount) 
--- --      VALUES ('Шрі-Ланка', true, 0, 5),
--- -- 			('Туреччина', true, 0, 5),
--- -- 			('Болгарія', true, 0, 5),
--- -- 			('Албанія', true, 0, 5),
--- -- 			('Чорногорія', true, 0, 5),
--- -- 			('Португалія', true, 0, 5),
--- -- 			('Угорщина', true, 0, 5),
--- -- 			('Польща', true, 0, 5),
--- -- 			('Італія', true, 0, 5),
--- --             ('Україна', true, 0, 5);
+--  INSERT INTO countries (name, travelStatus,availableHotels,toursCount) 
+--       VALUES ('Шрі-Ланка', true, 0, 5),
+--  			('Туреччина', true, 0, 5),
+--  			('Болгарія', true, 0, 5),
+--  			('Албанія', false, 0, 5),
+--  			('Чорногорія', true, 0, 5),
+-- 			('Португалія', true, 0, 5),
+--  			('Угорщина', true, 0, 5),
+--  			('Польща', false, 0, 5),
+--  			('Італія', true, 0, 5),
+--              ('Україна', true, 0, 5);
 
 --   CREATE TABLE `hotels` (
 --     `id`       int(60)     unsigned NOT NULL AUTO_INCREMENT,

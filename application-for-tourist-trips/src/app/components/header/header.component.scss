@@ -22,7 +22,6 @@
   background-size: 45%;
   background-position: center;
   border: 1px solid transparent;
-
   &:hover {
     animation-name: border-run;
     animation-duration: 1.5s;
@@ -32,6 +31,17 @@
   &:active {
     border: 1px solid transparent;
     background-size: 41%;
+  }
+}
+.congirm {
+  background-color: lightgray;
+  border: 1px solid transparent;
+  &:hover {
+    animation-name: border-run;
+    animation-duration: 1.5s;
+    background-color: transparent;
+    background-size: 46%;
+    background-color: lightgreen;
   }
 }
 

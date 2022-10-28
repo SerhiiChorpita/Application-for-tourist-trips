@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Form, NgForm } from '@angular/forms';
+import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { HeaderComponent } from 'src/app/components/header/header.component';
 import { ICountries } from 'src/app/shared/interfaces/countries/countries.interface';
 import { IHotel } from 'src/app/shared/interfaces/hotels/hotels.interface';
 import { DatabaseService } from 'src/app/shared/services/database/database.service';
+import { ShareDataService } from 'src/app/shared/services/share-data/share-data.service';
 
 @Component({
   selector: 'app-body',
@@ -16,6 +19,7 @@ export class BodyComponent implements OnInit {
   public newCountries: Array<string> = [];
 
   public selectedHotels: Array<IHotel> = [];
+  public selectedTickets: Array<IHotel> = [];
 
   public AboutUsCheck: boolean = true;
   public countryCheck: boolean = false;
@@ -23,15 +27,37 @@ export class BodyComponent implements OnInit {
   public bookHotelCheck: boolean = false;
 
   constructor(
-    private database: DatabaseService
-  ) { }
+    private database: DatabaseService,
+    private shareData: ShareDataService,
+  ) {
+    shareData.myDateChanged.subscribe(status => this.updatedStatus(status));
+  }
 
   ngOnInit(): void {
     this.getCountries();
+    this.dateGenerator()
   }
+
+  // clientDate(): void {
+  // }
+
+  updatedStatus(status: any): void {
+    console.log('it`s works!!!', status);
+
+  }
+
+
+  dateGenerator(): void {
+    let date = new Date;
+    let dd = date.getDate();
+    let mm = date.getMonth() + 1;
+    let yyyy = date.getFullYear();
+    console.log(`today is: ${dd}.${mm}.${yyyy}`);
+
+  }
+
   selectedHotelCheck(form: NgForm): void {
     console.log(form.value);
-
   }
 
 
@@ -48,7 +74,6 @@ export class BodyComponent implements OnInit {
 
     for (let i = 0; i < newSelectedC.length; i++) {
       if (keyValue(i)) {
-        console.log(this.selectedCountries[i]);
         this.newCountries.push(this.selectedCountries[i]);
       }
     }
@@ -58,13 +83,34 @@ export class BodyComponent implements OnInit {
 
   }
 
+  changeColor(elem: string, form: NgForm, name: string): void {
+    let keyValue = form.control.controls[`${name}`].value;
+
+    if (keyValue === true) {
+      let element = <HTMLElement>document.querySelector(`#${elem}`);
+      element.style.backgroundColor = '';
+    } else {
+      let element = <HTMLElement>document.querySelector(`#${elem}`);
+      element.style.backgroundColor = 'rgba(172, 255, 47, 0.35)';
+      element.style.borderRadius = '5px';
+    }
+    console.log(elem);
+  }
   getCountries(): void {
     this.selectedHotels = [];
     this.newCountries = [];
 
     this.database.getCountries().subscribe(
-      data => {
+      (data) => {
         this.countries = data;
+        console.log(this.countries);
+        this.countries.forEach(elem => {
+          if (elem.travelStatus === 1) {
+            elem.travelStatus = 'Доступний';
+          } else if (elem.travelStatus === 0) {
+            elem.travelStatus = 'Недоступний';
+          }
+        })
       },
       error => console.log("Error: " + error)
     )
@@ -97,9 +143,7 @@ export class BodyComponent implements OnInit {
             city: elem.city,
             country: elem.country,
           };
-          console.log('hotels', hotels);
           this.selectedHotels.push(hotels)
-          console.log('selectedHotels', this.selectedHotels);
         })
       },
       error => console.log("Error: " + error)

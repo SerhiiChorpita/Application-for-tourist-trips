@@ -1,7 +1,7 @@
 export interface ICountries {
     id: number,
     name: string,
-    travelStatus: boolean,
+    travelStatus: number | string,
     availableHotels: number,
     toursCount: number
 }
