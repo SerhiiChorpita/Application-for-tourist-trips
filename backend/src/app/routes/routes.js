@@ -24,8 +24,6 @@ const router = app => {
     });
 
 
-    // create city get module
-
     // create airTicket get module
 
 }

@@ -16,18 +16,23 @@ import { ShareDataService } from 'src/app/shared/services/share-data/share-data.
 export class BodyComponent implements OnInit {
 
   public countries: Array<ICountries> = [];
+  public countries2: Array<ICountries> = [];
   public selectedCountries: Array<string> = [];
   public newCountries: Array<string> = [];
 
   public hotelsCount: Array<IHotel> = [];
   public hotelCount: number = 0;
 
-
+  public noWayHotels: Array<IHotel> = [];
   public hotels: Array<IHotel> = [];
   public selectedHotels: Array<string> = [];
   public newHotels: Array<string> = [];
-  public availableInDate!: IDate;
   public clientDate!: IDate;
+
+  public allDate: Array<IDate> = [];
+  public selectedDate: boolean = false;
+  public selectedDate2: boolean = false;
+  public availableInDate!: IDate;
 
   public tickets: Array<IHotel> = [];
   public selectedTickets: Array<string> = [];
@@ -51,6 +56,114 @@ export class BodyComponent implements OnInit {
 
   ngOnInit(): void {
     this.getCountries();
+    this.getCountryCount();
+    this.dateGenerator();
+  }
+
+  clientDateStatus(clientDate: IDate): void {
+    this.clientDate = clientDate;
+    this.getCountryCount();
+
+  }
+
+  getCountryCount(): void {
+    this.database.getCountries().subscribe(
+      (data): Array<IHotel> => {
+        this.countries = data;
+        this.countries.forEach(elem => {
+          this.database.getHotels(elem.name).subscribe(
+            (data) => {
+              data.forEach((elem) => {
+                let hotel: IHotel;
+                hotel = {
+                  id: elem.id,
+                  name: elem.name,
+                  availableRooms: elem.availableRooms,
+                  availableInDate: this.allDate[elem.id - 1],
+                  city: elem.city,
+                  country: elem.country,
+                };
+                this.noWayHotels.push(hotel);
+              });
+              return this.noWayHotels
+            },
+            error => console.log("Error: " + error)
+          );
+          return this.countries;
+        });
+        return this.noWayHotels;
+      },
+      error => console.log("Error: " + error)
+    )
+
+    this.countries.forEach((elem): void => {
+      for (let i = 0; i < this.noWayHotels.length; i++) {
+        if (this.noWayHotels[i].country !== elem.name) {
+          this.hotelCount = 0;
+        }
+        if (this.noWayHotels[i].country === elem.name) {
+          let checkDate = this.allDate[this.noWayHotels[i].id - 1].day;
+          if (checkDate >= this.clientDate.day) {
+            this.hotelCount++
+            elem.availableHotels = this.hotelCount;
+          }
+        }
+
+      }
+    })
+    if (this.selectedDate) {
+      this.countries2 = this.countries;
+      this.sideMenuChange();
+      this.countryCheck = true;
+      this.selectedDate2 = true;
+
+    }
+    this.selectedDate = true;
+  }
+
+  dateGenerator(): void {
+    let date = new Date;
+    let dd: number = date.getDate();
+    let mm: number = date.getMonth() + 1;
+    let yyyy: number = date.getFullYear();
+
+    for (let i = 0; i < 40; i++) {
+      let dayGenerator!: number;
+      function getRndInteger(min: number, max: number): number {
+        return dayGenerator = Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+      getRndInteger(dd, 30)
+
+      this.availableInDate = {
+        day: dayGenerator,
+        month: mm,
+        year: yyyy
+      }
+      this.allDate.push(this.availableInDate);
+    }
+
+  }
+
+  selectedCountriesCheck(form: NgForm): void {
+    this.newCountries.splice(0);
+    this.selectedCountries.splice(0);
+
+    for (let key in form.value) {
+      this.selectedCountries.push(key)
+    }
+
+    let newSelectedC = this.selectedCountries;
+    let keyValue = (i: number) => form.control.controls[`${this.selectedCountries[(i)]}`].value;
+
+    for (let i = 0; i < newSelectedC.length; i++) {
+      if (keyValue(i)) {
+        this.newCountries.push(this.selectedCountries[i]);
+      }
+    }
+    if (this.newCountries.length === 0) {
+      this.newCountries = Object.keys(form.value);
+    }
+
   }
 
   selectedHotelCheck(form: NgForm): void {
@@ -75,27 +188,6 @@ export class BodyComponent implements OnInit {
   }
 
 
-  selectedCountriesCheck(form: NgForm): void {
-    this.newCountries.splice(0);
-    this.selectedCountries.splice(0);
-
-    for (let key in form.value) {
-      this.selectedCountries.push(key)
-    }
-
-    let newSelectedC = this.selectedCountries;
-    let keyValue = (i: number) => form.control.controls[`${this.selectedCountries[(i)]}`].value;
-
-    for (let i = 0; i < newSelectedC.length; i++) {
-      if (keyValue(i)) {
-        this.newCountries.push(this.selectedCountries[i]);
-      }
-    }
-    if (this.newCountries.length === 0) {
-      this.newCountries = Object.keys(form.value);
-    }
-  }
-
   changeColor(elem: string, form: NgForm, name: string): void {
     let keyValue = form.control.controls[`${name}`].value;
 
@@ -116,6 +208,7 @@ export class BodyComponent implements OnInit {
     this.database.getCountries().subscribe(
       (data) => {
         this.countries = data;
+
         this.countries.forEach(elem => {
           if (elem.travelStatus === 1) {
             elem.travelStatus = 'Доступний';
@@ -128,89 +221,49 @@ export class BodyComponent implements OnInit {
     )
   }
 
+
   async checkSelectedHotel(): Promise<void> {
     this.hotels.splice(0);
 
     if (this.newCountries.length === 0) {
-      this.getCountries()
+      this.getCountries();
       this.countries.forEach(elem => {
         this.newCountries.push(elem.name);
       })
     }
-    this.newCountries.forEach((element, index) => {
-      this.getHotels(element, index);
+    this.newCountries.forEach((element) => {
+      this.getHotels(element);
     });
-  }
-
-  async checkSelectedTicket(): Promise<void> {
-    this.hotels.splice(0);
-
-    if (this.newCountries.length === 0) {
-      this.getCountries()
-      this.countries.forEach(elem => {
-        this.newCountries.push(elem.name);
-      })
-    }
-    this.newCountries.forEach((element, index) => {
-      this.getHotels(element, index);
-    });
-  }
-
-  getCountryCount(): void {
-    this.getCountries();
-    this.checkSelectedHotel();
-    console.log(this.countries);
-    console.log(this.newHotels);
-    console.log(this.hotels);
 
   }
 
-  clientDateStatus(clientDate: IDate): void {
-    this.clientDate = clientDate;
-    this.getCountryCount();
-  }
+  // async checkSelectedTicket(): Promise<void> {
+  //   this.hotels.splice(0);
 
-  dateGenerator(): IDate {
-    let date = new Date;
-    let dd: number = date.getDate();
-    let mm: number = date.getMonth() + 1;
-    let yyyy: number = date.getFullYear();
+  //   if (this.newCountries.length === 0) {
+  //     this.getCountries()
+  //     this.countries.forEach(elem => {
+  //       this.newCountries.push(elem.name);
+  //     })
+  //   }
+  //   this.newCountries.forEach((element, index) => {
+  //     this.getHotels(element);
+  //   });
+  // }
 
-    if (this.clientDate === undefined) {
-      this.clientDate = {
-        day: dd,
-        month: mm,
-        year: yyyy
-      }
-    }
-
-    let dayGenerator!: number;
-    function getRndInteger(min: number, max: number): number {
-      return dayGenerator = Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-    getRndInteger(dd, 30)
-
-    return this.availableInDate = {
-      day: dayGenerator,
-      month: mm,
-      year: yyyy
-    }
-  }
-
-  getHotels(hotel: string, i: number): void {
+  getHotels(hotel: string): void {
     this.database.getHotels(hotel).subscribe(
       async data => {
         data.forEach(elem => {
-          this.dateGenerator();
-          let hotels: IHotel = {
+          let hotel: IHotel = {
             id: elem.id,
             name: elem.name,
             availableRooms: elem.availableRooms,
-            availableInDate: this.availableInDate,
+            availableInDate: this.allDate[elem.id - 1],
             city: elem.city,
             country: elem.country,
           };
-          this.hotels.push(hotels)
+          this.hotels.push(hotel);
         })
       },
       error => console.log("Error: " + error)

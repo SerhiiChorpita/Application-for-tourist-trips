@@ -50,7 +50,7 @@
 
             <ng-container *ngIf="countryCheck">
                 <form #countriesCheck="ngForm">
-                    <ng-container *ngFor="let item of countries; index as i">
+                    <ng-container *ngFor="let item of selectedDate2?countries2:countries ; index as i">
                         <div class="d-flex justify-content-between align-items-center p-2"
                             [ngClass]="{'bg-lightgrey':item.travelStatus === 'Недоступний'}" [id]="'itemC'+i">
                             <label class="d-flex justify-content-center align-items-center">
@@ -63,7 +63,7 @@
                                         статус: <span
                                             [ngClass]="{'bg-green':item.travelStatus === 'Доступний','bg-red':item.travelStatus === 'Недоступний'}">{{item.travelStatus}}</span></span>
                                     <span class="border-box">Кількість готелів: {{item.availableHotels}}</span>
-                                    <span class="border-box">Кількість турів: {{item.toursCount}}</span>
+                                    <!-- <span class="border-box">Кількість турів: {{item.toursCount}}</span> -->
                                 </div>
                             </label>
                             <div class="img-world"></div>
@@ -74,13 +74,11 @@
                         (click)="selectedCountriesCheck(countriesCheck);sideMenuChange();bookHotelCheck = true; checkSelectedHotel()">Обрати</button>
                 </form>
             </ng-container>
-
-
             <ng-container *ngIf="bookHotelCheck">
                 <form #hotelCheck="ngForm">
                     <ng-container *ngFor="let item of hotels; index as i">
                         <ng-container
-                            *ngIf="item.availableInDate.day >= clientDate.day && item.availableInDate.month >= clientDate.month && item.availableInDate.year >= clientDate.year">
+                            *ngIf="selectedDate2?item.availableInDate.day >= clientDate.day && item.availableInDate.month >= clientDate.month && item.availableInDate.year >= clientDate.year:selectedDate">
                             <div class="d-flex justify-content-between align-items-center  p-2"
                                 [ngClass]="{'bg-lightgrey':item.availableRooms === 0}" [id]="'itemH'+i">
                                 <label class="d-flex justify-content-center align-items-center">
@@ -89,12 +87,10 @@
                                         (click)="changeColor('itemH'+i, hotelCheck, item.name)">
                                     <div class="container">
                                         <h2><strong> {{item.name}}</strong></h2>
-
                                         <span class="border-box">Вільних
                                             номерів: <span
                                                 [ngClass]="{'bg-green':item.availableRooms > 0,'bg-red':item.availableRooms === 0}">
                                                 {{item.availableRooms}}</span></span>
-
                                         <span class="border-box">Місто: {{item.city}}</span>
                                         <br>
                                         <span class="border-box">Країна: {{item.country}}</span>
@@ -112,16 +108,12 @@
                             <h2>Готелі відсутні в даний період. Виберіть іншу дату.</h2>
                         </div>
                     </ng-container>
-
                     <button class="btn btn-warning"
                         (click)="selectedHotelCheck(hotelCheck);sideMenuChange();buyTicketCheck = true;">Обрати</button>
                 </form>
             </ng-container>
-
         </div>
     </div>
-
-
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -142,8 +134,6 @@
                             Будь ласка, спочатку оберіть країну та готель.
                         </span>
                     </ng-container>
-
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Зрозуміло</button>
@@ -151,5 +141,4 @@
             </div>
         </div>
     </div>
-
 </div>
