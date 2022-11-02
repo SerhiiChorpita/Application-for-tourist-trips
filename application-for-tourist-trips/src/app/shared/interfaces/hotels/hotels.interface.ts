@@ -7,4 +7,5 @@ export interface IHotel {
     availableInDate: IDate,
     city: string,
     country: string
+    info: string
 }

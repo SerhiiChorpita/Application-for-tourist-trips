@@ -1,6 +1,7 @@
 @import "../../shared/styles/variable";
 
 .footer {
+  z-index: 99;
   display: flex;
   justify-content: end;
   align-items: center;

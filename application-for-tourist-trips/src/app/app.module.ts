@@ -11,6 +11,8 @@ import { FormsModule } from '@angular/forms';
 import { BodyComponent } from './pages/body/body.component';
 import { HttpClientModule } from '@angular/common/http';
 
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -23,7 +25,8 @@ import { HttpClientModule } from '@angular/common/http';
     AppRoutingModule,
     NgbDatepickerModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent]

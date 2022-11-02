@@ -13,11 +13,11 @@
                 <button type="button" class="btn side-menu-btn" data-bs-toggle="modal"
                     data-bs-target="#exampleModal">Забронювати готель</button>
             </ng-container>
-            <ng-container *ngIf="selectedCountries.length > 0 || hotels.length > 0">
+            <ng-container *ngIf="toSelectTickets.length > 0 ">
                 <button type="button" class="btn side-menu-btn" [ngClass]="{'active-side-menu-btn': buyTicketCheck}"
                     (click)="sideMenuChange();buyTicketCheck = true">Придбати авіа квиток</button>
             </ng-container>
-            <ng-container *ngIf="hotels.length === 0">
+            <ng-container *ngIf="toSelectTickets.length === 0">
                 <button type="button" class="btn side-menu-btn" data-bs-toggle="modal"
                     data-bs-target="#exampleModal">Придбати авіа квиток</button>
             </ng-container>
@@ -48,9 +48,10 @@
                     ratione. </p>
             </ng-container>
 
-            <ng-container *ngIf="countryCheck">
+            <ng-container *ngIf="countryCheck && !selectedDate2">
                 <form #countriesCheck="ngForm">
-                    <ng-container *ngFor="let item of selectedDate2?countries2:countries ; index as i">
+                    <ng-container
+                        *ngFor="let item of countries | slice: (page1-1) * pageSize1 : (page1-1) * pageSize1 + pageSize1 ; index as i">
                         <div class="d-flex justify-content-between align-items-center p-2"
                             [ngClass]="{'bg-lightgrey':item.travelStatus === 'Недоступний'}" [id]="'itemC'+i">
                             <label class="d-flex justify-content-center align-items-center">
@@ -63,20 +64,59 @@
                                         статус: <span
                                             [ngClass]="{'bg-green':item.travelStatus === 'Доступний','bg-red':item.travelStatus === 'Недоступний'}">{{item.travelStatus}}</span></span>
                                     <span class="border-box">Кількість готелів: {{item.availableHotels}}</span>
-                                    <!-- <span class="border-box">Кількість турів: {{item.toursCount}}</span> -->
                                 </div>
                             </label>
                             <div class="img-world"></div>
                         </div>
                         <hr>
                     </ng-container>
-                    <button class="btn btn-warning"
-                        (click)="selectedCountriesCheck(countriesCheck);sideMenuChange();bookHotelCheck = true; checkSelectedHotel()">Обрати</button>
+                    <div class="conteiner d-flex justify-content-between">
+                        <button class="btn btn-warning"
+                            (click)="selectedCountriesCheck(countriesCheck);sideMenuChange();bookHotelCheck = true; checkSelectedHotel();btnDisabled=true"
+                            adc>Обрати</button>
+                        <ngb-pagination [pageSize]="4" [collectionSize]="10" [(page)]="page1"
+                            aria-label="Default pagination">
+                        </ngb-pagination>
+                    </div>
                 </form>
             </ng-container>
+            <ng-container *ngIf="countryCheck && selectedDate2">
+                <form #countriesCheck="ngForm">
+                    <ng-container
+                        *ngFor="let item of countries2 | slice: (page1-1) * pageSize1 : (page1-1) * pageSize1 + pageSize1 ; index as i">
+                        <div class="d-flex justify-content-between align-items-center p-2"
+                            [ngClass]="{'bg-lightgrey':item.travelStatus === 'Недоступний'}" [id]="'itemC'+i">
+                            <label class="d-flex justify-content-center align-items-center">
+                                <input type="checkbox" [name]="item.name" ngModel
+                                    [disabled]="item.travelStatus === 'Недоступний'"
+                                    (click)="changeColor('itemC'+i, countriesCheck, item.name)">
+                                <div class="container">
+                                    <h2><strong> {{item.name}}</strong></h2>
+                                    <span class="border-box">Тревел
+                                        статус: <span
+                                            [ngClass]="{'bg-green':item.travelStatus === 'Доступний','bg-red':item.travelStatus === 'Недоступний'}">{{item.travelStatus}}</span></span>
+                                    <span class="border-box">Кількість готелів: {{item.availableHotels}}</span>
+                                </div>
+                            </label>
+                            <div class="img-world"></div>
+                        </div>
+                        <hr>
+                    </ng-container>
+                    <div class="conteiner d-flex justify-content-between">
+                        <button type="button" class="btn btn-warning"
+                            (click)="selectedCountriesCheck(countriesCheck);sideMenuChange();bookHotelCheck = true; checkSelectedHotel();btnDisabled=true"
+                            adc>Обрати</button>
+                        <ngb-pagination [pageSize]="4" [collectionSize]="10" [(page)]="page1"
+                            aria-label="Default pagination">
+                        </ngb-pagination>
+                    </div>
+                </form>
+            </ng-container>
+
             <ng-container *ngIf="bookHotelCheck">
                 <form #hotelCheck="ngForm">
-                    <ng-container *ngFor="let item of hotels; index as i">
+                    <ng-container
+                        *ngFor="let item of hotels | slice: (page2-1) * pageSize2 : (page2-1) * pageSize2 + pageSize2; index as i">
                         <ng-container
                             *ngIf="selectedDate2?item.availableInDate.day >= clientDate.day && item.availableInDate.month >= clientDate.month && item.availableInDate.year >= clientDate.year:selectedDate">
                             <div class="d-flex justify-content-between align-items-center  p-2"
@@ -98,6 +138,7 @@
                                             {{item.availableInDate.year}}/{{item.availableInDate.month}}/{{item.availableInDate.day}}</span>
                                     </div>
                                 </label>
+                                <h4 class="to-right">{{item.info}}>></h4>
                                 <div class="img-hotel"></div>
                             </div>
                             <hr>
@@ -108,9 +149,68 @@
                             <h2>Готелі відсутні в даний період. Виберіть іншу дату.</h2>
                         </div>
                     </ng-container>
-                    <button class="btn btn-warning"
-                        (click)="selectedHotelCheck(hotelCheck);sideMenuChange();buyTicketCheck = true;">Обрати</button>
+
+                    <div class="conteiner d-flex justify-content-between">
+                        <button type="button" class="btn btn-warning"
+                            (click)="selectedTicketCheck(hotelCheck);sideMenuChange();buyTicketCheck = true;checkSelectedTicket();btnDisabled=true"
+                            adc>Обрати</button>
+
+                        <ngb-pagination [pageSize]="4" [collectionSize]="hotels.length" [(page)]="page2"
+                            aria-label="Default pagination">
+                        </ngb-pagination>
+                    </div>
                 </form>
+            </ng-container>
+
+            <ng-container *ngIf="buyTicketCheck">
+                <form #ticketCheck="ngForm">
+                    <ng-container
+                        *ngFor="let item of toSelectTickets | slice: (page3-1) * pageSize3 : (page3-1) * pageSize3 + pageSize3; index as i">
+                        <div class="d-flex justify-content-between align-items-center  p-2"
+                            [ngClass]="{'bg-lightgrey':item.numberOfSeats === 0}" [id]="'itemA'+i">
+                            <label class="d-flex justify-content-center align-items-center">
+                                <input type="checkbox" [name]="item.nameAirline" ngModel
+                                    [disabled]="item.numberOfSeats === 0"
+                                    (click)="changeColor('itemA'+i, ticketCheck, item.nameAirline)">
+                                <div class="container">
+                                    <h2><strong> {{item.nameAirline}}</strong></h2>
+                                    <span class="border-box">Вільних
+                                        місць: <span
+                                            [ngClass]="{'bg-green':item.numberOfSeats > 0,'bg-red':item.numberOfSeats === 0}">
+                                            {{item.numberOfSeats}}</span></span>
+                                    <br>
+                                    <span class="border-box">Місто прибуття: {{item.flightCity}}</span>
+                                    <br>
+                                    <span class="border-box">Дата вильоту:
+                                        {{item.flightDates.year}}/{{item.flightDates.month}}/{{item.flightDates.day}}</span>
+                                </div>
+                            </label>
+                            <h4 class="to-right">Вартість: {{item.cost}} $ >></h4>
+                            <div class="img-ticket"></div>
+                        </div>
+                        <hr>
+                    </ng-container>
+
+                    <div class="conteiner d-flex justify-content-between">
+                        <ng-container *ngIf="!orderedTour">
+
+                            <button type="button" class="btn btn-warning" id="orderTour"
+                                (click)="sideMenuChange();buyTicketCheck = true;orderTour(ticketCheck, toSelectTickets);btnDisabled=true"
+                                adc>Обрати</button>
+                        </ng-container>
+
+                        <ng-container *ngIf="orderedTour">
+                            <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                                data-bs-target="#exampleModal">Забронювати
+                            </button>
+                        </ng-container>
+
+                        <ngb-pagination [pageSize]="4" [collectionSize]="toSelectTickets.length" [(page)]="page3"
+                            aria-label="Default pagination">
+                        </ngb-pagination>
+                    </div>
+                </form>
+
             </ng-container>
         </div>
     </div>
@@ -124,19 +224,34 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <ng-container *ngIf="newCountries.length === 0">
+                    <ng-container *ngIf="newCountries.length === 0 ">
                         <span>
                             Спочатку оберіть країну в яку хочете відправитись у подорож.
                         </span>
                     </ng-container>
-                    <ng-container *ngIf="newCountries.length > 0 && hotels.length === 0">
+                    <ng-container *ngIf="toSelectTickets.length === 0">
                         <span>
                             Будь ласка, спочатку оберіть країну та готель.
                         </span>
                     </ng-container>
+                    <ng-container *ngIf="orderedTour">
+                        <span>
+                            Замовити обраний тур ?
+                        </span>
+                    </ng-container>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Зрозуміло</button>
+
+                    <ng-container *ngIf="newCountries.length === 0 || toSelectTickets.length === 0">
+                        <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Зрозуміло</button>
+                    </ng-container>
+
+                    <ng-container *ngIf="orderedTour">
+                        <button type="button" class="btn btn-warning ml-2" data-bs-dismiss="modal"
+                            (click)="success()">Замовити</button>
+                        <button type="button" class="btn btn-warning" data-bs-dismiss="modal"
+                            (click)="repeat()">Переглянути ще</button>
+                    </ng-container>
                 </div>
             </div>
         </div>

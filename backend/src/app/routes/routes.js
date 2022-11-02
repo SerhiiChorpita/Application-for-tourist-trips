@@ -23,8 +23,21 @@ const router = app => {
         });
     });
 
+    app.get('/tickets', (request, response) => {
+        pool.query('SELECT * FROM tickets', (error, result) => {
+            if (error) throw error;
 
-    // create airTicket get module
+            response.send(result);
+        });
+    });
+
+    app.get('/successfulorder', (request, response) => {
+        pool.query('SELECT * FROM successfulorder', (error, result) => {
+            if (error) throw error;
+
+            response.send(result);
+        });
+    });
 
 }
 
