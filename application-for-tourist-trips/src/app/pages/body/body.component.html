@@ -5,13 +5,19 @@
                 (click)="sideMenuChange();AboutUsCheck = true">Про нас</button>
             <button type="button" class="btn side-menu-btn" [ngClass]="{'active-side-menu-btn': countryCheck}"
                 (click)="sideMenuChange();countryCheck = true; getCountries()">Обрати країну</button>
-            <button type="button" class="btn side-menu-btn" [ngClass]="{'active-side-menu-btn': bookHotelCheck}"
-                (click)="sideMenuChange();bookHotelCheck = true; checkSelectedHotel()">Забронювати готель</button>
-            <ng-container *ngIf="selectedTickets.length > 0">
+            <ng-container *ngIf="selectedCountries.length > 0">
+                <button type="button" class="btn side-menu-btn" [ngClass]="{'active-side-menu-btn': bookHotelCheck}"
+                    (click)="sideMenuChange();bookHotelCheck = true; checkSelectedHotel()">Забронювати готель</button>
+            </ng-container>
+            <ng-container *ngIf="selectedCountries.length === 0">
+                <button type="button" class="btn side-menu-btn" data-bs-toggle="modal"
+                    data-bs-target="#exampleModal">Забронювати готель</button>
+            </ng-container>
+            <ng-container *ngIf="selectedCountries.length > 0 || hotels.length > 0">
                 <button type="button" class="btn side-menu-btn" [ngClass]="{'active-side-menu-btn': buyTicketCheck}"
                     (click)="sideMenuChange();buyTicketCheck = true">Придбати авіа квиток</button>
             </ng-container>
-            <ng-container *ngIf="selectedTickets.length === 0">
+            <ng-container *ngIf="hotels.length === 0">
                 <button type="button" class="btn side-menu-btn" data-bs-toggle="modal"
                     data-bs-target="#exampleModal">Придбати авіа квиток</button>
             </ng-container>
@@ -72,23 +78,43 @@
 
             <ng-container *ngIf="bookHotelCheck">
                 <form #hotelCheck="ngForm">
-                    <ng-container *ngFor="let item of selectedHotels; index as i">
-                        <div class="d-flex justify-content-between align-items-center  p-2" [id]="'itemH'+i">
-                            <label class="d-flex justify-content-center align-items-center">
-                                <input type="checkbox" [name]="item.name" ngModel
-                                    (click)="changeColor('itemH'+i, hotelCheck, item.name)">
-                                <div class="container">
-                                    <h2><strong> {{item.name}}</strong></h2>
-                                    <span class="border-box">Вільних номерів:{{item.availableRooms}}</span>
-                                    <span class="border-box">Місто:{{item.city}}</span>
-                                    <span class="border-box">Країна:{{item.country}}</span>
-                                </div>
-                            </label>
-                            <div class="img-hotel"></div>
-                        </div>
-                        <hr>
+                    <ng-container *ngFor="let item of hotels; index as i">
+                        <ng-container
+                            *ngIf="item.availableInDate.day >= clientDate.day && item.availableInDate.month >= clientDate.month && item.availableInDate.year >= clientDate.year">
+                            <div class="d-flex justify-content-between align-items-center  p-2"
+                                [ngClass]="{'bg-lightgrey':item.availableRooms === 0}" [id]="'itemH'+i">
+                                <label class="d-flex justify-content-center align-items-center">
+                                    <input type="checkbox" [name]="item.name" ngModel
+                                        [disabled]="item.availableRooms === 0"
+                                        (click)="changeColor('itemH'+i, hotelCheck, item.name)">
+                                    <div class="container">
+                                        <h2><strong> {{item.name}}</strong></h2>
+
+                                        <span class="border-box">Вільних
+                                            номерів: <span
+                                                [ngClass]="{'bg-green':item.availableRooms > 0,'bg-red':item.availableRooms === 0}">
+                                                {{item.availableRooms}}</span></span>
+
+                                        <span class="border-box">Місто: {{item.city}}</span>
+                                        <br>
+                                        <span class="border-box">Країна: {{item.country}}</span>
+                                        <span class="border-box">Дата заселення:
+                                            {{item.availableInDate.year}}/{{item.availableInDate.month}}/{{item.availableInDate.day}}</span>
+                                    </div>
+                                </label>
+                                <div class="img-hotel"></div>
+                            </div>
+                            <hr>
+                        </ng-container>
                     </ng-container>
-                    <button class="btn btn-warning" (click)="selectedHotelCheck(hotelCheck)">Обрати</button>
+                    <ng-container *ngIf="!hotels">
+                        <div class="container text-center">
+                            <h2>Готелі відсутні в даний період. Виберіть іншу дату.</h2>
+                        </div>
+                    </ng-container>
+
+                    <button class="btn btn-warning"
+                        (click)="selectedHotelCheck(hotelCheck);sideMenuChange();buyTicketCheck = true;">Обрати</button>
                 </form>
             </ng-container>
 
@@ -106,7 +132,18 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Будь ласка, спочатку оберіть країну та готель
+                    <ng-container *ngIf="newCountries.length === 0">
+                        <span>
+                            Спочатку оберіть країну в яку хочете відправитись у подорож.
+                        </span>
+                    </ng-container>
+                    <ng-container *ngIf="newCountries.length > 0 && hotels.length === 0">
+                        <span>
+                            Будь ласка, спочатку оберіть країну та готель.
+                        </span>
+                    </ng-container>
+
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Зрозуміло</button>
