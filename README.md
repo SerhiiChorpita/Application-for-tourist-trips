@@ -1,6 +1,8 @@
 # Application-for-tourist-trips
 
-Description: the choice of country ,hotel and air tickets for the selected date starting from today.
+Description: the choice of country ,hotel and air tickets for the selected date starting from today;
+
+I used: Node.js/Express for the server part, MySQL Database, Bootstrap, Angular 2+;
 
 Screenshot of the application:
 
