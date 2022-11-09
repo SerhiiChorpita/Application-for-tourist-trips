@@ -85,9 +85,9 @@ export class BodyComponent implements OnInit {
         this.countries = data;
         this.countries.forEach(elem => {
           if (elem.travelStatus === 1) {
-            elem.travelStatus = 'Доступний';
+            elem.travelStatus = 'Available';
           } else if (elem.travelStatus === 0) {
-            elem.travelStatus = 'Недоступний';
+            elem.travelStatus = 'Not available';
           }
           this.database.getHotels(elem.name).subscribe(
             (data) => {
@@ -102,7 +102,7 @@ export class BodyComponent implements OnInit {
                   availableInDate: this.allDate[elem.id - 1],
                   city: elem.city,
                   country: elem.country,
-                  info: `Тур на ${indxGenr} ${nights}, вартість ${costGenr} $`
+                  info: `Tour on ${indxGenr} ${nights}, cost ${costGenr} $`
                 };
                 this.noWayHotels.push(hotel);
               });
@@ -126,17 +126,15 @@ export class BodyComponent implements OnInit {
     function nightCheck(arg: number): void {
       switch (arg) {
         case 1:
-          nights = 'ніч';
+          nights = 'night';
           break;
         case 2:
         case 3:
         case 4:
-          nights = 'ночі';
-          break;
         case 5:
         case 6:
         case 7:
-          nights = 'ночей';
+          nights = 'nights';
           break;
         default:
           nights = '';
@@ -256,9 +254,9 @@ export class BodyComponent implements OnInit {
 
         this.countries.forEach(elem => {
           if (elem.travelStatus === 1) {
-            elem.travelStatus = 'Доступний';
+            elem.travelStatus = 'Available';
           } else if (elem.travelStatus === 0) {
-            elem.travelStatus = 'Недоступний';
+            elem.travelStatus = 'Not available';
           }
         })
       },
@@ -377,7 +375,7 @@ export class BodyComponent implements OnInit {
             availableInDate: this.allDate[elem.id - 1],
             city: elem.city,
             country: elem.country,
-            info: `Тур на ${indxGenr} ${nights}, вартість ${costGenr} $`
+            info: `Tour on ${indxGenr} ${nights}, cost ${costGenr} $`
           };
           this.hotels.push(hotel);
         })
@@ -393,17 +391,15 @@ export class BodyComponent implements OnInit {
     function nightCheck(arg: number): void {
       switch (arg) {
         case 1:
-          nights = 'ніч';
+          nights = 'night';
           break;
         case 2:
         case 3:
         case 4:
-          nights = 'ночі';
-          break;
         case 5:
         case 6:
         case 7:
-          nights = 'ночей';
+          nights = 'nights';
           break;
         default:
           nights = '';
@@ -438,7 +434,7 @@ export class BodyComponent implements OnInit {
         this.AboutUsCheck = true;
         this.orderedTour = false;
         this.buyTicketCheck = false;
-        alert('замовлення отримане, очікуйте звязку з оператором.')
+        alert('order received, wait for communication with the operator.')
       },
       error => console.log("Error: " + error)
     )
